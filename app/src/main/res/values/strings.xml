@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Realm Example</string>
+    <string name="no_data">No Data</string>
+    <string name="main_title">Rss Reader</string>
+    <string name="channels">Channels</string>
+    <string name="title_activity_channels">ChannelsActivity</string>
+    <string name="title">Title</string>
+    <string name="link">Link</string>
+    <string name="done">Done</string>
+</resources>
