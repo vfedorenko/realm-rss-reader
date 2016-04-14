@@ -1,11 +1,14 @@
-package com.weezlabs.realmexample.models;
+package com.weezlabs.realmexample.models.realm;
+
+import com.weezlabs.realmexample.models.Plainable;
+import com.weezlabs.realmexample.models.plain.Channel;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.Required;
 
-public class ChannelRealmModel extends RealmObject {
+public class ChannelRealmModel extends RealmObject implements Plainable<Channel> {
     public static final String FIELD_IS_CHECKED = "isChecked";
     public static final String FIELD_LINK = "link";
 
@@ -16,6 +19,7 @@ public class ChannelRealmModel extends RealmObject {
     private boolean isChecked;
     private RealmList<RssRealmModel> rssList;
 
+    //region Getters+Setters
     public String getTitle() {
         return title;
     }
@@ -46,5 +50,16 @@ public class ChannelRealmModel extends RealmObject {
 
     public void setRssList(RealmList<RssRealmModel> rssList) {
         this.rssList = rssList;
+    }
+    //endregion
+
+    @Override
+    public Channel toPlainObject() {
+        Channel channel = new Channel();
+        channel.setTitle(title);
+        channel.setLink(link);
+        channel.setChecked(isChecked);
+
+        return channel;
     }
 }

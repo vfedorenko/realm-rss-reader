@@ -1,29 +1,28 @@
-package com.weezlabs.realmexample.activities;
+package com.weezlabs.realmexample.presentation.channelsmodule.activities;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 
 import com.weezlabs.realmexample.R;
 import com.weezlabs.realmexample.databinding.ActivityCreateChannelBinding;
-import com.weezlabs.realmexample.viewmodels.ChannelViewModel;
+import com.weezlabs.realmexample.presentation.channelsmodule.viewmodels.ChannelViewModel;
 
-public class CreateChannelActivity extends AppCompatActivity {
-    ChannelViewModel mViewModel;
+public class CreateChannelActivity extends AppCompatActivity implements CreateChannelActivityInput {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mViewModel = new ChannelViewModel();
+        ChannelViewModel viewModel = new ChannelViewModel();
+        viewModel.setActivityInput(this);
 
         ActivityCreateChannelBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_create_channel);
-        binding.setChannel(mViewModel);
+        binding.setChannel(viewModel);
     }
 
-    public void onDoneClick(View view) {
-        mViewModel.saveModel();
+    @Override
+    public void finishActivity() {
         finish();
     }
 }

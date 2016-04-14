@@ -3,7 +3,7 @@
     <data>
         <variable
             name="channel"
-            type="com.weezlabs.realmexample.viewmodels.ChannelViewModel"/>
+            type="com.weezlabs.realmexample.presentation.channelsmodule.viewmodels.ChannelViewModel"/>
     </data>
 
     <LinearLayout

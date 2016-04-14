@@ -1,41 +1,42 @@
-package com.weezlabs.realmexample.activities;
+package com.weezlabs.realmexample.presentation.channelsmodule.activities;
 
-import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.weezlabs.realmexample.R;
-import com.weezlabs.realmexample.adapters.ChannelsRealmAdapter;
-import com.weezlabs.realmexample.models.ChannelRealmModel;
-import com.weezlabs.realmexample.repositories.ChannelsRepository;
-
-import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
-import io.realm.RealmResults;
+import com.weezlabs.realmexample.databinding.ActivityChannelsBinding;
+import com.weezlabs.realmexample.presentation.channelsmodule.adapters.ChannelsAdapter;
+import com.weezlabs.realmexample.presentation.channelsmodule.viewmodels.ChannelsListActivityViewModel;
 
 public class ChannelsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_channels);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
+        ChannelsListActivityViewModel viewModel = new ChannelsListActivityViewModel();
+
+        ActivityChannelsBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_channels);
+        binding.setViewModel(viewModel);
+
+        setSupportActionBar(binding.toolbar);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        RealmResults<ChannelRealmModel> channels = ChannelsRepository.getChannels(false);
+        ChannelsAdapter adapter = new ChannelsAdapter();
 
-        ChannelsRealmAdapter adapter = new ChannelsRealmAdapter(this, channels);
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        binding.recyclerView.setAdapter(adapter);
 
-        RealmRecyclerView rssRecyclerView = (RealmRecyclerView) findViewById(R.id.realm_recycler_view);
-        rssRecyclerView.setAdapter(adapter);
+        viewModel.putAdapter(adapter);
+        viewModel.initUi();
     }
 
     @Override
@@ -52,9 +53,5 @@ public class ChannelsActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    public void onFabClick(View view) {
-        startActivity(new Intent(this, CreateChannelActivity.class));
     }
 }

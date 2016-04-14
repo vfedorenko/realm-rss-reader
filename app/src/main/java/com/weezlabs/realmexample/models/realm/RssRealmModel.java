@@ -1,9 +1,12 @@
-package com.weezlabs.realmexample.models;
+package com.weezlabs.realmexample.models.realm;
+
+import com.weezlabs.realmexample.models.Plainable;
+import com.weezlabs.realmexample.models.plain.Rss;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class RssRealmModel extends RealmObject {
+public class RssRealmModel extends RealmObject implements Plainable<Rss> {
     public static final String FIELD_DATE = "date";
     public static final String FIELD_CHANNEL = "channel";
 
@@ -57,4 +60,15 @@ public class RssRealmModel extends RealmObject {
         this.channel = channel;
     }
     //endregion
+
+    @Override
+    public Rss toPlainObject() {
+        Rss rss = new Rss();
+        rss.setTitle(title);
+        rss.setText(text);
+        rss.setLink(link);
+        rss.setDate(date);
+
+        return rss;
+    }
 }

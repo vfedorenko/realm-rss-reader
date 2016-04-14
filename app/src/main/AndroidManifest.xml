@@ -12,8 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activities.RssListActivity"
+            android:name=".presentation.rssmodule.activities.RssListActivity"
             android:label="@string/main_title"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,16 +22,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".presentation.channelsmodule.activities.ChannelsActivity"
+            android:label="@string/title_activity_channels"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".presentation.channelsmodule.activities.CreateChannelActivity"
+            android:screenOrientation="portrait"/>
 
         <service
-            android:name=".webapi.RssFeedUpdateRequest"
+            android:name=".businesslogic.webapi.RssFeedUpdateRequest"
             android:exported="false" />
-
-        <activity
-            android:name=".activities.ChannelsActivity"
-            android:label="@string/title_activity_channels"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activities.CreateChannelActivity"></activity>
     </application>
-
 </manifest>

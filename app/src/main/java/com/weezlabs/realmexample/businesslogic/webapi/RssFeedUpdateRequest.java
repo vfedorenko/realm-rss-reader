@@ -1,10 +1,10 @@
-package com.weezlabs.realmexample.webapi;
+package com.weezlabs.realmexample.businesslogic.webapi;
 
 import android.app.IntentService;
 import android.content.Intent;
 
-import com.weezlabs.realmexample.models.RssRealmModel;
-import com.weezlabs.realmexample.repositories.RssRepository;
+import com.weezlabs.realmexample.models.realm.RssRealmModel;
+import com.weezlabs.realmexample.businesslogic.repositories.RssRepository;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -24,7 +24,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 public class RssFeedUpdateRequest extends IntentService {
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.ENGLISH);
+    public static final String EXTRA_CHANNELS_LINKS = "channels_links";
+
+    private SimpleDateFormat mDateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.ENGLISH);
 
     public RssFeedUpdateRequest() {
         super("rssUpdateRequest");
@@ -32,8 +34,14 @@ public class RssFeedUpdateRequest extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        String urlString = intent.getDataString();
+        List<String> links = intent.getStringArrayListExtra(EXTRA_CHANNELS_LINKS);
 
+        for (String link : links) {
+            fetchChannel(link);
+        }
+    }
+
+    private void fetchChannel(String urlString) {
         try {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = dbFactory.newDocumentBuilder();
@@ -60,13 +68,13 @@ public class RssFeedUpdateRequest extends IntentService {
                     rss.setTitle(title);
                     rss.setLink(link);
                     rss.setText(text);
-                    rss.setDate(dateFormat.parse(date).getTime());
+                    rss.setDate(mDateFormat.parse(date).getTime());
 
                     rssList.add(rss);
                 }
             }
 
-            RssRepository.updateFeedInChannel(rssList, urlString);
+            RssRepository.getInstance().updateFeedInChannel(rssList, urlString);
         } catch (IOException | ParserConfigurationException | ParseException | SAXException e) {
             e.printStackTrace();
         }
