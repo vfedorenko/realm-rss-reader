@@ -1,6 +1,9 @@
 package com.weezlabs.realmexample.businesslogic.repositories;
 
+import android.util.Log;
+
 import com.weezlabs.realmexample.models.plain.Rss;
+import com.weezlabs.realmexample.models.realm.ChannelRealmModel;
 import com.weezlabs.realmexample.models.realm.RssRealmModel;
 
 import java.util.ArrayList;
@@ -58,9 +61,15 @@ public final class RssRepository implements RssRepositoryInput {
         clearRssInChannel(channelLink);
 
         Realm realm = Realm.getDefaultInstance();
+
+        ChannelRealmModel channel = realm.where(ChannelRealmModel.class).equalTo(ChannelRealmModel.FIELD_LINK, channelLink).findFirst();
+
         realm.beginTransaction();
 
-        realm.copyToRealmOrUpdate(rssList);
+        for (RssRealmModel rss : rssList) {
+            RssRealmModel realmRss = realm.copyToRealmOrUpdate(rss);
+            realmRss.setChannel(channel);
+        }
 
         realm.commitTransaction();
         realm.close();
@@ -73,11 +82,17 @@ public final class RssRepository implements RssRepositoryInput {
     @Override
     public void clearRssInChannel(String channelLink) {
         Realm realm = Realm.getDefaultInstance();
+        RealmResults<RssRealmModel> results = realm.where(RssRealmModel.class).equalTo("channel.link", channelLink).findAll();
+
         realm.beginTransaction();
 
-        realm.where(RssRealmModel.class).equalTo("channel.link", channelLink).findAll().clear();
+        Log.d("111", "deleting: " + results.size());
+        results.clear();
 
         realm.commitTransaction();
+
+        Log.d("111", "after delete: " + results.size());
+
         realm.close();
 
         for (RssRepositoryOutput output : mOutputs) {

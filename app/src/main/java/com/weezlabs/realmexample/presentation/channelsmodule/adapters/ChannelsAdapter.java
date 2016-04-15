@@ -16,10 +16,8 @@ import com.weezlabs.realmexample.presentation.channelsmodule.viewmodels.ChannelV
 import java.util.ArrayList;
 import java.util.List;
 
-import io.realm.RealmViewHolder;
-
 public class ChannelsAdapter extends RecyclerView.Adapter<ChannelsAdapter.BindingHolder> {
-    public class BindingHolder extends RealmViewHolder {
+    public class BindingHolder extends RecyclerView.ViewHolder {
         private ItemChannelBinding mBinding;
 
         public BindingHolder(View itemView) {

@@ -16,10 +16,8 @@ import com.weezlabs.realmexample.presentation.rssmodule.viewmodels.RssViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.realm.RealmViewHolder;
-
 public class RssRealmAdapter extends RecyclerView.Adapter<RssRealmAdapter.BindingHolder> {
-    public class BindingHolder extends RealmViewHolder {
+    public class BindingHolder extends RecyclerView.ViewHolder {
         private ItemRssBinding mBinding;
 
         public BindingHolder(View itemView) {

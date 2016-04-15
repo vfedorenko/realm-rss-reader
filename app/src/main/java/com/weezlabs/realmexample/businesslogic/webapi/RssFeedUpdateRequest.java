@@ -2,9 +2,11 @@ package com.weezlabs.realmexample.businesslogic.webapi;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
 
-import com.weezlabs.realmexample.models.realm.RssRealmModel;
 import com.weezlabs.realmexample.businesslogic.repositories.RssRepository;
+import com.weezlabs.realmexample.models.realm.RssRealmModel;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -41,7 +43,7 @@ public class RssFeedUpdateRequest extends IntentService {
         }
     }
 
-    private void fetchChannel(String urlString) {
+    private void fetchChannel(final String urlString) {
         try {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = dbFactory.newDocumentBuilder();
@@ -51,7 +53,7 @@ public class RssFeedUpdateRequest extends IntentService {
 
             NodeList nodeList = doc.getElementsByTagName("item");
 
-            List<RssRealmModel> rssList = new ArrayList<>();
+            final List<RssRealmModel> rssList = new ArrayList<>();
 
             for (int i = 0; i < nodeList.getLength(); i++) {
                 Node node = nodeList.item(i);
@@ -74,7 +76,12 @@ public class RssFeedUpdateRequest extends IntentService {
                 }
             }
 
-            RssRepository.getInstance().updateFeedInChannel(rssList, urlString);
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    RssRepository.getInstance().updateFeedInChannel(rssList, urlString);
+                }
+            });
         } catch (IOException | ParserConfigurationException | ParseException | SAXException e) {
             e.printStackTrace();
         }
