@@ -1,32 +1,35 @@
 package com.weezlabs.realmexample.repositories;
 
+import android.util.Log;
+
 import com.weezlabs.realmexample.models.RssRealmModel;
 
 import java.util.List;
 
 import io.realm.Realm;
-import io.realm.RealmResults;
-import io.realm.Sort;
 
 public final class RssRepository {
-    public static RealmResults<RssRealmModel> getRssFeed() {
-        Realm realm = Realm.getDefaultInstance();
-        RealmResults<RssRealmModel> results = realm.where(RssRealmModel.class)
-                .findAllSortedAsync(RssRealmModel.FIELD_DATE, Sort.DESCENDING);
-        realm.close();
-
-        return results;
-    }
-
-    public static void updateFeedInChannel(List<RssRealmModel> rssList, String channelLink) {
+    public static void updateFeedInChannel(final List<RssRealmModel> rssList, String channelLink) {
         clearRssInChannel(channelLink);
 
         Realm realm = Realm.getDefaultInstance();
-        realm.beginTransaction();
 
-        realm.copyToRealmOrUpdate(rssList);
-
-        realm.commitTransaction();
+        realm.executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.copyToRealmOrUpdate(rssList);
+            }
+        }, new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+                Log.d("REALM", "All done updating.");
+            }
+        }, new Realm.Transaction.OnError() {
+            @Override
+            public void onError(Throwable error) {
+                // transaction is automatically rolled-back, do any cleanup here
+            }
+        });
         realm.close();
     }
 

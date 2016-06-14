@@ -13,16 +13,16 @@ import com.weezlabs.realmexample.adapters.RssRealmAdapter;
 import com.weezlabs.realmexample.models.ChannelRealmModel;
 import com.weezlabs.realmexample.models.RssRealmModel;
 import com.weezlabs.realmexample.repositories.ChannelsRepository;
-import com.weezlabs.realmexample.repositories.RssRepository;
 import com.weezlabs.realmexample.webapi.RssFeedUpdateRequest;
 
 import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 public class RssListActivity extends AppCompatActivity {
 
-    private Realm mRealm = Realm.getDefaultInstance();
+    private Realm mRealm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +32,10 @@ public class RssListActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        RealmResults<RssRealmModel> rssList = RssRepository.getRssFeed();
+        mRealm = Realm.getDefaultInstance();
+
+        RealmResults<RssRealmModel> rssList = mRealm.where(RssRealmModel.class)
+                .findAllSortedAsync(RssRealmModel.FIELD_DATE, Sort.DESCENDING);
 
         RssRealmAdapter adapter = new RssRealmAdapter(this, rssList);
 
